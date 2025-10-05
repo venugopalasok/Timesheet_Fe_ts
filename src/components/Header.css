@@ -42,7 +42,7 @@
     margin-top: 1px;
 }
 
-.header .timesheet-logo {
+.header .timesheet-logo, .header .user-profile-logo {
     height: 20px;
     width: auto;
     max-width: 150px;

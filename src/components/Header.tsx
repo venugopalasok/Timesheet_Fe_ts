@@ -9,7 +9,13 @@ const Header = () => {
 
 
                 <div className="right-section">
-                    <button className="signout-button">Sign Out</button>
+                <img className="user-profile-logo" 
+                        src="/user-profile-logo.png" />  
+                    <select className="signout-select" > 
+                        <option value="signout" >
+                          Sign Out  
+                        </option>
+                    </select>
                 </div>
         </div>
     );

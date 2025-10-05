@@ -30,7 +30,7 @@ function App() {
         <div className='day-cell'>Friday</div>
         <div className='day-cell'>Saturday</div>
         
-        {/* Row 2 */}
+        {/* Row 3 */}
         <div className='row-header'>Billable Hours</div>
         <div className='hours-cell'>0</div>
         <div className='hours-cell'>8</div>
@@ -39,7 +39,7 @@ function App() {
         <div className='hours-cell'>8</div>
         <div className='hours-cell'>8</div>
         <div className='hours-cell'>0</div>
-        {/* Row 3 */}
+        {/* Row 4 */}
         <div className='row-header'>Non-Billable Hours</div>
         <div className='hours-cell'>0</div>
         <div className='hours-cell'>0</div>
