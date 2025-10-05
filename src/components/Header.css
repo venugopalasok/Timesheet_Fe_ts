@@ -1,0 +1,55 @@
+.header {
+    background-color: #ddd;
+    color: rgb(78, 78, 78);
+    padding-left: 15px;
+    padding-right: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+}
+.header .left-section {
+    width: 208px;
+}
+
+@media (max-width: 800px) {
+    .header .left-section {
+        width: unset;
+    }
+}
+
+.header .header-link {
+    display: inline-block;
+    padding: 6px 9.5px;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid rgba(0, 0, 0, 0);
+}
+
+.header .header-link:hover {
+    border: 1px solid white;
+}
+
+.header .logo {
+    height: 26px;
+    margin-top: 1px;
+}
+
+.header .timesheet-logo {
+    height: 20px;
+    width: auto;
+    max-width: 150px;
+    object-fit: contain;
+    margin-top: 1px;
+}
+
+.header .mobile-logo {
+    display: none;
+}

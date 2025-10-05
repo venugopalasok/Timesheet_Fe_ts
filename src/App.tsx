@@ -1,5 +1,4 @@
-
-
+import Header from './components/Header'
 import './App.css'
 
 function App() {
@@ -7,6 +6,7 @@ function App() {
   return (
     <>
       <title>Timesheet</title>
+      <Header />
       <div className='timesheet-container'>
         {/* Row 1 */}
         <div className='prev-button-container'>
