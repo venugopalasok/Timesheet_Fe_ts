@@ -11,6 +11,7 @@ function App() {
         {/* Row 1 */}
         <div className='prev-button-container'>
           <button className='button'>Previous</button>
+          <button className='button'>Next</button>
         </div>
         <div className='date-cell'>05</div>
         <div className='date-cell'>06</div>
@@ -38,7 +39,18 @@ function App() {
         <div className='hours-cell'>8</div>
         <div className='hours-cell'>8</div>
         <div className='hours-cell'>0</div>
-      </div>    
+        {/* Row 3 */}
+        <div className='row-header'>Non-Billable Hours</div>
+        <div className='hours-cell'>0</div>
+        <div className='hours-cell'>0</div>
+        <div className='hours-cell'>0</div>
+        <div className='hours-cell'>0</div>
+        <div className='hours-cell'>0</div>
+        <div className='hours-cell'>0</div>
+        <div className='hours-cell'>0</div>
+
+      </div>
+      
     </>
   )
 }
