@@ -10,8 +10,8 @@ function App() {
       <div className='timesheet-container'>
         {/* Row 1 */}
         <div className='prev-button-container'>
-          <button className='button'>Previous</button>
-          <button className='button'>Next</button>
+          <button className='button'>&lt;</button>
+          <button className='button'>&gt;</button>
         </div>
         <div className='date-cell'>05</div>
         <div className='date-cell'>06</div>
