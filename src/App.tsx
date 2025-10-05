@@ -1,4 +1,4 @@
-import { useState } from 'react'
+
 
 import './App.css'
 
@@ -9,6 +9,17 @@ function App() {
       <title>Timesheet</title>
       <div className='timesheet-container'>
         {/* Row 1 */}
+        <div className='prev-button-container'>
+          <button className='button'>Previous</button>
+        </div>
+        <div className='date-cell'>05</div>
+        <div className='date-cell'>06</div>
+        <div className='date-cell'>07</div>
+        <div className='date-cell'>08</div>
+        <div className='date-cell'>09</div>
+        <div className='date-cell'>10</div>
+        <div className='date-cell'>11</div>
+        {/* Row 2 */}
         <div className='row-header'>Day</div>
         <div className='day-cell'>Sunday</div>
         <div className='day-cell'>Monday</div>
