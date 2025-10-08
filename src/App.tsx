@@ -1,5 +1,6 @@
 import Header from './components/Header'
 import './App.css'
+import DateCell from './components/DateCell'
 
 function App() {
 
@@ -10,16 +11,16 @@ function App() {
       <div className='timesheet-container'>
         {/* Row 1 */}
         <div className='prev-button-container'>
-          <button className='button'>&lt;</button>
-          <button className='button'>&gt;</button>
+                <button className='button'>&lt;</button>
+                <button className='button'>&gt;</button>
         </div>
-        <div className='date-cell'>05</div>
-        <div className='date-cell'>06</div>
-        <div className='date-cell'>07</div>
-        <div className='date-cell'>08</div>
-        <div className='date-cell'>09</div>
-        <div className='date-cell'>10</div>
-        <div className='date-cell'>11</div>
+        <DateCell date={5}/>
+        <DateCell date={6}/>
+        <DateCell date={7}/>
+        <DateCell date={8}/>
+        <DateCell date={9}/>
+        <DateCell date={10}/>
+        <DateCell date={11}/>
         {/* Row 2 */}
         <div className='row-header'>Day</div>
         <div className='day-cell'>Sunday</div>
