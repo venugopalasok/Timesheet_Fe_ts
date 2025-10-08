@@ -2,6 +2,7 @@ import Header from './components/Header'
 import './App.css'
 import DateCell from './components/DateCell'
 import DayCell from './components/DayCell'
+import HoursCell from './components/HoursCell'
 
 function App() {
 
@@ -34,22 +35,22 @@ function App() {
         
         {/* Row 3 */}
         <div className='row-header'>Billable Hours</div>
-        <div className='hours-cell'>0</div>
-        <div className='hours-cell'>8</div>
-        <div className='hours-cell'>8</div>
-        <div className='hours-cell'>8</div>
-        <div className='hours-cell'>8</div>
-        <div className='hours-cell'>8</div>
-        <div className='hours-cell'>0</div>
+        <HoursCell hours={0}/>
+        <HoursCell hours={8}/>
+        <HoursCell hours={8}/>
+        <HoursCell hours={8}/>
+        <HoursCell hours={8}/>
+        <HoursCell hours={8}/>
+        <HoursCell hours={0}/>
         {/* Row 4 */}
         <div className='row-header'>Non-Billable Hours</div>
-        <div className='hours-cell'>0</div>
-        <div className='hours-cell'>0</div>
-        <div className='hours-cell'>0</div>
-        <div className='hours-cell'>0</div>
-        <div className='hours-cell'>0</div>
-        <div className='hours-cell'>0</div>
-        <div className='hours-cell'>0</div>
+        <HoursCell hours={0}/>    
+        <HoursCell hours={0}/>
+        <HoursCell hours={0}/>
+        <HoursCell hours={0}/>
+        <HoursCell hours={0}/>
+        <HoursCell hours={0}/>
+        <HoursCell hours={0}/>
 
       </div>
       
