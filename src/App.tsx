@@ -1,6 +1,7 @@
 import Header from './components/Header'
 import './App.css'
 import DateCell from './components/DateCell'
+import DayCell from './components/DayCell'
 
 function App() {
 
@@ -23,13 +24,13 @@ function App() {
         <DateCell date={11}/>
         {/* Row 2 */}
         <div className='row-header'>Day</div>
-        <div className='day-cell'>Sunday</div>
-        <div className='day-cell'>Monday</div>
-        <div className='day-cell'>Tuesday</div>
-        <div className='day-cell'>Wednesday</div>
-        <div className='day-cell'>Thursday</div>
-        <div className='day-cell'>Friday</div>
-        <div className='day-cell'>Saturday</div>
+        <DayCell day="Sunday"/>
+        <DayCell day="Monday"/>
+        <DayCell day="Tuesday"/>
+        <DayCell day="Wednesday"/>
+        <DayCell day="Thursday"/>
+        <DayCell day="Friday"/>
+        <DayCell day="Saturday"/>
         
         {/* Row 3 */}
         <div className='row-header'>Billable Hours</div>
