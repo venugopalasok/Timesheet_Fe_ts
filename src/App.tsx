@@ -10,11 +10,13 @@ function App() {
     <>
       <title>Timesheet</title>
       <Header />
-      <div className='timesheet-container'>
+      <div className='grid grid-cols-[150px_repeat(7,1fr)] gap-[5px] 
+      bg-gray-300 border border-gray-300 rounded-[5px] 
+      w-full box-border p-5 mt-20'>
         {/* Row 1 */}
-        <div className='prev-button-container'>
-                <button className='button'>&lt;</button>
-                <button className='button'>&gt;</button>
+        <div className='flex justify-center items-center gap-[5px]'>
+                <button className='bg-orange-500 text-white px-4 py-2 rounded'>&lt;</button>
+                <button className='bg-orange-500 text-white px-4 py-2 rounded'>&gt;</button>
         </div>
         <DateCell date={5}/>
         <DateCell date={6}/>
