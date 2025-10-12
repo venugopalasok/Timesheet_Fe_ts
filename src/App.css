@@ -1,4 +1,4 @@
 @import "tailwindcss";
 .row-header{
-    @apply bg-blue-400 text-black p-4 text-center flex items-center flex-col justify-center rounded-[5px];
+    @apply bg-gray-300 text-black font-semibold p-2 text-sm text-center flex items-center flex-col justify-center;
 }

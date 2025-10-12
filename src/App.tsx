@@ -10,15 +10,15 @@ function App() {
     <>
       <title>Timesheet</title>
       <Header />
-      <div className='flex justify-center items-center m-5'>
+      <div className='flex justify-center items-center mx-5 my-3'>
       
-        <div className='grid grid-cols-[150px_repeat(7,1fr)] gap-[5px] 
-        bg-gray-200 mt-20 border border-gray-100 rounded-[5px] 
-        w-full box-border p-5'>
+        <div className='grid grid-cols-[100px_repeat(7,1fr)] gap-[3px] 
+        bg-white mt-20 border border-gray-200 rounded-[5px] 
+        w-full max-w-5xl box-border p-3'>
           {/* Row 1 */}
-          <div className='flex justify-center items-center gap-[5px]'>
-                  <button className='bg-orange-500 text-white px-4 py-2 rounded'>&lt;</button>
-                  <button className='bg-orange-500 text-white px-4 py-2 rounded'>&gt;</button>
+          <div className='flex flex-col justify-center items-center gap-[3px]'>
+                  <button className='bg-gray-400 text-white px-2 py-1 text-sm rounded w-20'>Previous</button>
+                  <button className='bg-white text-black border-black-400 border px-2 py-1 text-sm rounded '>Next</button>
           </div>
           <DateCell date={5}/>
           <DateCell date={6}/>
