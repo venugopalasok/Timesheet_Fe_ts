@@ -12,13 +12,13 @@ function App() {
       <Header />
       <div className='flex justify-center items-center mx-5 my-3'>
       
-        <div className='grid grid-cols-[100px_repeat(7,1fr)] gap-[3px] 
+        <div className='grid grid-cols-[100px_repeat(7,1fr)] gap-[10px] 
         bg-white mt-20 border border-gray-200 rounded-[5px] 
-        w-full max-w-5xl box-border p-3'>
+        w-full max-w-5xl box-border p-5'>
           {/* Row 1 */}
-          <div className='flex flex-col justify-center items-center gap-[3px]'>
-                  <button className='bg-gray-400 text-white px-2 py-1 text-sm rounded w-20'>Previous</button>
-                  <button className='bg-white text-black border-black-400 border px-2 py-1 text-sm rounded '>Next</button>
+          <div className='flex flex-row justify-center items-center gap-[3px]'>
+                  <button className='bg-gray-400 text-white px-5 py-5 text-sm rounded'>&lt;</button>
+                  <button className='bg-gray-400 text-white px-5 py-5 text-sm rounded'>&gt;</button>
           </div>
           <DateCell date={5}/>
           <DateCell date={6}/>
