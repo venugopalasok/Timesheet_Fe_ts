@@ -15,7 +15,7 @@ const DayCell = ({ day, isSelected = false, onToggle }: DayCellProps) => {
   return (
     <button
       onClick={onToggle}
-      className={`text-3xl font-bold py-3 px-2 text-center 
+      className={`text-xs font-semibold p-1.5 text-center 
       flex items-center flex-col justify-center rounded-xl shadow-sm 
       transition-all duration-200 cursor-pointer
       ${isSelected 
