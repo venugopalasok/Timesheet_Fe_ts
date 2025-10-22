@@ -1,10 +1,44 @@
+import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import './App.css'
 import DateCell from './components/DateCell'
 import DayCell from './components/DayCell'
 import HoursCell from './components/HoursCell'
+import { 
+  getFirstWeekOfCurrentMonth,
+  getNextWeek, 
+  getPreviousWeek, 
+  formatDateForDisplay, 
+  getDayName,
+  getWeekRangeDisplay,
+  isToday,
+  canNavigateNext,
+  canNavigatePrevious,
+  isWeekCompletelyInCurrentMonth
+} from './utils/weekNavigation'
+import type { WeekRange } from './utils/weekNavigation'
 
 function App() {
+  const [currentWeek, setCurrentWeek] = useState<WeekRange>(getFirstWeekOfCurrentMonth())
+  const [weekDisplay, setWeekDisplay] = useState<string>('')
+
+  useEffect(() => {
+    setWeekDisplay(getWeekRangeDisplay(currentWeek))
+  }, [currentWeek])
+
+  const handleNextWeek = () => {
+    const nextWeek = getNextWeek(currentWeek)
+    if (nextWeek) {
+      setCurrentWeek(nextWeek)
+    }
+  }
+
+  const handlePrevWeek = () => {
+    const prevWeek = getPreviousWeek(currentWeek)
+    if (prevWeek) {
+      setCurrentWeek(prevWeek)
+    }
+  }
 
   return (
     <>
@@ -15,27 +49,64 @@ function App() {
         <div className='grid grid-cols-[120px_repeat(7,1fr)] gap-3 
         bg-white/95 backdrop-blur-sm mt-20 border-0 rounded-2xl 
         w-full max-w-6xl box-border p-6 shadow-2xl'>
-          {/* Row 1 */}
-          <div className='flex flex-row justify-center items-center gap-2'>
-                  <button className='bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 py-3 text-sm rounded-lg shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105'>&lt;</button>
-                  <button className='bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 py-3 text-sm rounded-lg shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105'>&gt;</button>
+          {/* Row 1 - Navigation and Week Display */}
+          <div className='flex flex-col justify-center items-center gap-2'>
+            <div className='flex flex-row justify-center items-center gap-2'>
+              <button 
+                onClick={handlePrevWeek}
+                disabled={!canNavigatePrevious(currentWeek)}
+                className={`px-4 py-3 text-sm rounded-lg shadow-md transition-all duration-200 ${
+                  canNavigatePrevious(currentWeek)
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white hover:shadow-lg hover:scale-105 cursor-pointer'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                &lt;
+              </button>
+              <button 
+                onClick={handleNextWeek}
+                disabled={!canNavigateNext(currentWeek)}
+                className={`px-4 py-3 text-sm rounded-lg shadow-md transition-all duration-200 ${
+                  canNavigateNext(currentWeek)
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white hover:shadow-lg hover:scale-105 cursor-pointer'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                &gt;
+              </button>
+            </div>
+            <div className='text-sm font-medium text-gray-600 text-center'>
+              {weekDisplay}
+            </div>
+            {(!canNavigatePrevious(currentWeek) || !canNavigateNext(currentWeek)) && (
+              <div className='text-xs text-gray-500 text-center mt-1'>
+                {!canNavigatePrevious(currentWeek) && !canNavigateNext(currentWeek) 
+                  ? 'Only week in current month'
+                  : !canNavigatePrevious(currentWeek) 
+                    ? 'First week of month' + (!isWeekCompletelyInCurrentMonth(currentWeek) ? ' (includes previous month days)' : '')
+                    : 'Last week of month' + (!isWeekCompletelyInCurrentMonth(currentWeek) ? ' (includes next month days)' : '')
+                }
+              </div>
+            )}
           </div>
-          <DateCell date={5}/>
-          <DateCell date={6}/>
-          <DateCell date={7}/>
-          <DateCell date={8}/>
-          <DateCell date={9}/>
-          <DateCell date={10}/>
-          <DateCell date={11}/>
+          {currentWeek.dates.map((date, index) => {
+            const currentDate = new Date();
+            const isCurrentMonth = date.getMonth() === currentDate.getMonth() && 
+                                 date.getFullYear() === currentDate.getFullYear();
+            return (
+              <DateCell 
+                key={index} 
+                date={formatDateForDisplay(date)} 
+                isToday={isToday(date)} 
+                isCurrentMonth={isCurrentMonth}
+              />
+            );
+          })}
           {/* Row 2 */}
           <div className='row-header'>Day</div>
-          <DayCell day="Sunday"/>
-          <DayCell day="Monday"/>
-          <DayCell day="Tuesday"/>
-          <DayCell day="Wednesday"/>
-          <DayCell day="Thursday"/>
-          <DayCell day="Friday"/>
-          <DayCell day="Saturday"/>
+          {currentWeek.dates.map((date, index) => (
+            <DayCell key={index} day={getDayName(date)} />
+          ))}
           
           {/* Row 3 */}
           <div className='row-header'>Billable Hours</div>
