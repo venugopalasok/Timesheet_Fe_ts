@@ -21,9 +21,12 @@ import type { WeekRange } from './utils/weekNavigation'
 function App() {
   const [currentWeek, setCurrentWeek] = useState<WeekRange>(getFirstWeekOfCurrentMonth())
   const [weekDisplay, setWeekDisplay] = useState<string>('')
+  const [selectedDays, setSelectedDays] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     setWeekDisplay(getWeekRangeDisplay(currentWeek))
+    // Clear selected days when week changes
+    setSelectedDays(new Set())
   }, [currentWeek])
 
   const handleNextWeek = () => {
@@ -38,6 +41,18 @@ function App() {
     if (prevWeek) {
       setCurrentWeek(prevWeek)
     }
+  }
+
+  const handleDayToggle = (dayIndex: number) => {
+    setSelectedDays(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(dayIndex)) {
+        newSet.delete(dayIndex)
+      } else {
+        newSet.add(dayIndex)
+      }
+      return newSet
+    })
   }
 
   return (
@@ -78,6 +93,11 @@ function App() {
             <div className='text-sm font-medium text-gray-600 text-center'>
               {weekDisplay}
             </div>
+            {selectedDays.size > 0 && (
+              <div className='text-xs text-indigo-600 font-medium text-center'>
+                {selectedDays.size} day{selectedDays.size !== 1 ? 's' : ''} selected
+              </div>
+            )}
             {(!canNavigatePrevious(currentWeek) || !canNavigateNext(currentWeek)) && (
               <div className='text-xs text-gray-500 text-center mt-1'>
                 {!canNavigatePrevious(currentWeek) && !canNavigateNext(currentWeek) 
@@ -103,9 +123,14 @@ function App() {
             );
           })}
           {/* Row 2 */}
-          <div className='row-header'>Day</div>
+          <div className='row-header'>WFH: Y/N</div>
           {currentWeek.dates.map((date, index) => (
-            <DayCell key={index} day={getDayName(date)} />
+            <DayCell 
+              key={index} 
+              day={getDayName(date)} 
+              isSelected={selectedDays.has(index)}
+              onToggle={() => handleDayToggle(index)}
+            />
           ))}
           
           {/* Row 3 */}
