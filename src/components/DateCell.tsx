@@ -1,10 +1,11 @@
 const DateCell = ({date}:{date:any}) => {
+    const formattedDate = date < 10 ? `0${date}` : date;
     return (
         <>
-            <div className='bg-white border-black-400 border text-base font-mono slashed-zero text-black p-2 text-center 
+            <div className='bg-gradient-to-br slashed-zero from-indigo-50 to-purple-50 border-2 border-indigo-200 text-5xl font-bold text-indigo-700 p-3 text-center 
                             flex items-center flex-col justify-center 
-                            rounded-[5px] aspect-square'>
-                {date}
+                            rounded-xl aspect-square shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer'>
+                {formattedDate}
             </div>
         </>
     )

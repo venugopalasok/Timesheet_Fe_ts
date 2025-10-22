@@ -1,4 +1,4 @@
 @import "tailwindcss";
 .row-header{
-    @apply bg-gray-300 text-black font-semibold p-2 text-sm text-center flex items-center flex-col justify-center;
+    @apply bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold p-3 text-sm text-center flex items-center flex-col justify-center rounded-lg shadow-md;
 }
