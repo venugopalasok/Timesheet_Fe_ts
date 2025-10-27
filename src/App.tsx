@@ -18,10 +18,12 @@ import {
   isWeekCompletelyInCurrentMonth
 } from './utils/weekNavigation'
 import { 
-  saveWeeklyTimesheets, 
-  submitWeeklyTimesheets,
+  saveTimesheet,
+  submitTimesheet,
   checkSaveServiceHealth,
-  checkSubmitServiceHealth
+  checkSubmitServiceHealth,
+  getSavedTimesheets,
+  getSubmittedTimesheets
 } from './services/timesheetAPI'
 import type { WeekRange } from './utils/weekNavigation'
 
@@ -65,6 +67,14 @@ function App() {
     }
     checkServices()
   }, [])
+
+  // Fetch saved and submitted timesheets when week changes
+  useEffect(() => {
+    const fetchTimesheets = async () => {
+      await fetchTimesheetsForWeek()
+    }
+    fetchTimesheets()
+  }, [currentWeek, servicesHealthy])
 
   const handleNextWeek = () => {
     const nextWeek = getNextWeek(currentWeek)
@@ -123,6 +133,95 @@ function App() {
     return `${year}-${month}-${day}`
   }
 
+  // Internal fetch function without loading state management
+  const _fetchTimesheetsData = async () => {
+    const startDate = formatDateForAPI(currentWeek.startDate)
+    const endDate = formatDateForAPI(currentWeek.endDate)
+    
+    console.log(`[FETCH] Fetching timesheets for ${startDate} to ${endDate}`)
+    
+    // Initialize dayData with zeros
+    const newDayData: DayData[] = Array(7).fill(null).map(() => ({ 
+      billableHours: 0, 
+      nonBillableHours: 0, 
+      isWFH: false 
+    }))
+    
+    // Fetch from save service
+    if (servicesHealthy.save) {
+      try {
+        const saveResponse = await getSavedTimesheets(DEFAULT_EMPLOYEE_ID, startDate, endDate)
+        console.log('[FETCH-SAVE] Save service response:', saveResponse)
+        if (saveResponse.data && Array.isArray(saveResponse.data)) {
+          console.log(`[FETCH-SAVE] Found ${saveResponse.data.length} saved records`)
+          saveResponse.data.forEach((record: any) => {
+            console.log(`[FETCH-SAVE] Record: ${record.date} ${record.recordType} ${record.hours}h`)
+            const recordDate = new Date(record.date)
+            const dayIndex = currentWeek.dates.findIndex(date => 
+              date.toDateString() === recordDate.toDateString()
+            )
+            
+            if (dayIndex !== -1) {
+              if (record.recordType === 'billable') {
+                newDayData[dayIndex].billableHours = record.hours
+              } else if (record.recordType === 'non-billable') {
+                newDayData[dayIndex].nonBillableHours = record.hours
+              }
+            }
+          })
+        }
+      } catch (err) {
+        console.error('[FETCH-SAVE] Error fetching saved timesheets:', err)
+      }
+    }
+    
+    // Fetch from submit service
+    if (servicesHealthy.submit) {
+      try {
+        const submitResponse = await getSubmittedTimesheets(DEFAULT_EMPLOYEE_ID, startDate, endDate)
+        console.log('[FETCH-SUBMIT] Submit service response:', submitResponse)
+        if (submitResponse.data && Array.isArray(submitResponse.data)) {
+          console.log(`[FETCH-SUBMIT] Found ${submitResponse.data.length} submitted records`)
+          submitResponse.data.forEach((record: any) => {
+            console.log(`[FETCH-SUBMIT] Record: ${record.date} ${record.recordType} ${record.hours}h`)
+            const recordDate = new Date(record.date)
+            const dayIndex = currentWeek.dates.findIndex(date => 
+              date.toDateString() === recordDate.toDateString()
+            )
+            
+            if (dayIndex !== -1) {
+              if (record.recordType === 'billable') {
+                newDayData[dayIndex].billableHours = record.hours
+              } else if (record.recordType === 'non-billable') {
+                newDayData[dayIndex].nonBillableHours = record.hours
+              }
+            }
+          })
+        }
+      } catch (err) {
+        console.error('[FETCH-SUBMIT] Error fetching submitted timesheets:', err)
+      }
+    }
+    
+    console.log('[FETCH] Final dayData:', newDayData)
+    setDayData(newDayData)
+    setError(null)
+  }
+
+  // Public fetch function with loading state management (for useEffect)
+  const fetchTimesheetsForWeek = async () => {
+    setIsLoading(true)
+    try {
+      await _fetchTimesheetsData()
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch timesheets'
+      setError(message)
+      console.error('[FETCH] Error:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const handleSave = async () => {
     setError(null)
     setSuccessMessage(null)
@@ -133,33 +232,44 @@ function App() {
         throw new Error('Save service is not available. Please try again later.')
       }
 
-      const startDate = formatDateForAPI(currentWeek.startDate)
-      const endDate = formatDateForAPI(currentWeek.endDate)
+      console.log('[SAVE] Starting save with dayData:', dayData)
+      
+      // Save each day's data individually
+      for (let dayIndex = 0; dayIndex < currentWeek.dates.length; dayIndex++) {
+        const date = currentWeek.dates[dayIndex]
+        const dayDataForDay = dayData[dayIndex]
+        console.log(`[SAVE] Day ${dayIndex}: ${date.toDateString()}`, dayDataForDay)
 
-      // Save billable hours
-      const billableResponse = await saveWeeklyTimesheets({
-        startDate,
-        endDate,
-        hours: 0, // Will be overridden for each day
-        employeeId: DEFAULT_EMPLOYEE_ID,
-        projectId: DEFAULT_PROJECT_ID,
-        recordType: 'billable',
-        taskId: DEFAULT_TASK_ID,
-      })
+        // Save billable hours for this day
+        if (dayDataForDay.billableHours > 0 || dayDataForDay.billableHours === 0) {
+          console.log(`[SAVE] Saving billable: ${dayDataForDay.billableHours}h for ${date.toDateString()}`)
+          await saveTimesheet({
+            date: date,
+            hours: dayDataForDay.billableHours,
+            employeeId: DEFAULT_EMPLOYEE_ID,
+            projectId: DEFAULT_PROJECT_ID,
+            recordType: 'billable',
+            taskId: DEFAULT_TASK_ID,
+          })
+        }
 
-      // Save non-billable hours
-      const nonBillableResponse = await saveWeeklyTimesheets({
-        startDate,
-        endDate,
-        hours: 0, // Will be overridden for each day
-        employeeId: DEFAULT_EMPLOYEE_ID,
-        projectId: DEFAULT_PROJECT_ID,
-        recordType: 'non-billable',
-        taskId: DEFAULT_TASK_ID,
-      })
+        // Save non-billable hours for this day
+        if (dayDataForDay.nonBillableHours > 0 || dayDataForDay.nonBillableHours === 0) {
+          console.log(`[SAVE] Saving non-billable: ${dayDataForDay.nonBillableHours}h for ${date.toDateString()}`)
+          await saveTimesheet({
+            date: date,
+            hours: dayDataForDay.nonBillableHours,
+            employeeId: DEFAULT_EMPLOYEE_ID,
+            projectId: DEFAULT_PROJECT_ID,
+            recordType: 'non-billable',
+            taskId: DEFAULT_TASK_ID,
+          })
+        }
+      }
 
       setSuccessMessage('Timesheet saved successfully!')
-      console.log('Save responses:', billableResponse, nonBillableResponse)
+      console.log('All days saved successfully')
+      await _fetchTimesheetsData() // Refresh data after successful save
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to save timesheet'
       setError(message)
@@ -179,33 +289,44 @@ function App() {
         throw new Error('Submit service is not available. Please try again later.')
       }
 
-      const startDate = formatDateForAPI(currentWeek.startDate)
-      const endDate = formatDateForAPI(currentWeek.endDate)
+      console.log('[SUBMIT] Starting submit with dayData:', dayData)
+      
+      // Submit each day's data individually
+      for (let dayIndex = 0; dayIndex < currentWeek.dates.length; dayIndex++) {
+        const date = currentWeek.dates[dayIndex]
+        const dayDataForDay = dayData[dayIndex]
+        console.log(`[SUBMIT] Day ${dayIndex}: ${date.toDateString()}`, dayDataForDay)
 
-      // Submit billable hours
-      const billableResponse = await submitWeeklyTimesheets({
-        startDate,
-        endDate,
-        hours: 0, // Will be overridden for each day
-        employeeId: DEFAULT_EMPLOYEE_ID,
-        projectId: DEFAULT_PROJECT_ID,
-        recordType: 'billable',
-        taskId: DEFAULT_TASK_ID,
-      })
+        // Submit billable hours for this day
+        if (dayDataForDay.billableHours > 0 || dayDataForDay.billableHours === 0) {
+          console.log(`[SUBMIT] Submitting billable: ${dayDataForDay.billableHours}h for ${date.toDateString()}`)
+          await submitTimesheet({
+            date: date,
+            hours: dayDataForDay.billableHours,
+            employeeId: DEFAULT_EMPLOYEE_ID,
+            projectId: DEFAULT_PROJECT_ID,
+            recordType: 'billable',
+            taskId: DEFAULT_TASK_ID,
+          })
+        }
 
-      // Submit non-billable hours
-      const nonBillableResponse = await submitWeeklyTimesheets({
-        startDate,
-        endDate,
-        hours: 0, // Will be overridden for each day
-        employeeId: DEFAULT_EMPLOYEE_ID,
-        projectId: DEFAULT_PROJECT_ID,
-        recordType: 'non-billable',
-        taskId: DEFAULT_TASK_ID,
-      })
+        // Submit non-billable hours for this day
+        if (dayDataForDay.nonBillableHours > 0 || dayDataForDay.nonBillableHours === 0) {
+          console.log(`[SUBMIT] Submitting non-billable: ${dayDataForDay.nonBillableHours}h for ${date.toDateString()}`)
+          await submitTimesheet({
+            date: date,
+            hours: dayDataForDay.nonBillableHours,
+            employeeId: DEFAULT_EMPLOYEE_ID,
+            projectId: DEFAULT_PROJECT_ID,
+            recordType: 'non-billable',
+            taskId: DEFAULT_TASK_ID,
+          })
+        }
+      }
 
       setSuccessMessage('Timesheet submitted successfully!')
-      console.log('Submit responses:', billableResponse, nonBillableResponse)
+      console.log('All days submitted successfully')
+      await _fetchTimesheetsData() // Refresh data after successful submit
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to submit timesheet'
       setError(message)
@@ -309,13 +430,14 @@ function App() {
           })}
 
           {/* Row 2 - WFH */}
-          <div className='row-header'>WFH: Y/N</div>
+          <div className='row-header'>WFH</div>
           {currentWeek.dates.map((date, index) => (
             <WFHCell
               key={index}
               isWFH={dayData[index].isWFH}
               onChange={(isWFH) => handleWFHChange(index, isWFH)}
               dayIndex={index}
+              day={getDayName(date)}
             />
           ))}
           

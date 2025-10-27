@@ -5,6 +5,18 @@ const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 const SAVE_SERVICE_URL = `${BASE_URL}`;
 const SUBMIT_SERVICE_URL = `${BASE_URL.replace('3000', '3001')}`;
 
+/**
+ * Format date as YYYY-MM-DD in local timezone (not UTC)
+ * This prevents timezone-related date shifts
+ */
+const formatDateForAPI = (date: Date | string): string => {
+  if (typeof date === 'string') return date;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export interface TimesheetRecord {
   date: string | Date;
   hours: number;
@@ -115,7 +127,7 @@ export const saveTimesheet = async (record: TimesheetRecord): Promise<TimesheetR
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        date: record.date instanceof Date ? record.date.toISOString().split('T')[0] : record.date,
+        date: formatDateForAPI(record.date),
         hours: record.hours,
         employeeId: record.employeeId,
         projectId: record.projectId,
@@ -172,7 +184,7 @@ export const submitTimesheet = async (record: TimesheetRecord): Promise<Timeshee
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        date: record.date instanceof Date ? record.date.toISOString().split('T')[0] : record.date,
+        date: formatDateForAPI(record.date),
         hours: record.hours,
         employeeId: record.employeeId,
         projectId: record.projectId,
