@@ -63,7 +63,7 @@ function App() {
       
         <div className='grid grid-cols-[120px_repeat(7,1fr)] gap-3 
         bg-white/95 backdrop-blur-sm mt-20 border-0 rounded-2xl 
-        w-full max-w-6xl box-border p-6 shadow-2xl'>
+        w-full max-w-full box-border p-6 shadow-2xl overflow-x-auto'>
           {/* Row 1 - Navigation and Week Display */}
           <div className='flex flex-col justify-center items-center gap-2'>
             <div className='flex flex-row justify-center items-center gap-2'>
