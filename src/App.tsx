@@ -155,7 +155,7 @@ function App() {
         if (saveResponse.data && Array.isArray(saveResponse.data)) {
           console.log(`[FETCH-SAVE] Found ${saveResponse.data.length} saved records`)
           saveResponse.data.forEach((record: any) => {
-            console.log(`[FETCH-SAVE] Record: ${record.date} ${record.recordType} ${record.hours}h`)
+            console.log(`[FETCH-SAVE] Record: ${record.date} ${record.recordType} ${record.hours}h, WFH: ${record.wfh}`)
             const recordDate = new Date(record.date)
             const dayIndex = currentWeek.dates.findIndex(date => 
               date.toDateString() === recordDate.toDateString()
@@ -166,6 +166,13 @@ function App() {
                 newDayData[dayIndex].billableHours = record.hours
               } else if (record.recordType === 'non-billable') {
                 newDayData[dayIndex].nonBillableHours = record.hours
+              }
+              // Set WFH status from any record type
+              console.log(`[FETCH-SAVE] Setting dayIndex ${dayIndex} WFH to ${record.wfh}`)
+              if (record.wfh !== undefined) {
+                newDayData[dayIndex].isWFH = record.wfh
+              } else {
+                console.log(`[FETCH-SAVE] WARNING: wfh field is undefined for record at dayIndex ${dayIndex}`)
               }
             }
           })
@@ -183,7 +190,7 @@ function App() {
         if (submitResponse.data && Array.isArray(submitResponse.data)) {
           console.log(`[FETCH-SUBMIT] Found ${submitResponse.data.length} submitted records`)
           submitResponse.data.forEach((record: any) => {
-            console.log(`[FETCH-SUBMIT] Record: ${record.date} ${record.recordType} ${record.hours}h`)
+            console.log(`[FETCH-SUBMIT] Record: ${record.date} ${record.recordType} ${record.hours}h, WFH: ${record.wfh}`)
             const recordDate = new Date(record.date)
             const dayIndex = currentWeek.dates.findIndex(date => 
               date.toDateString() === recordDate.toDateString()
@@ -194,6 +201,13 @@ function App() {
                 newDayData[dayIndex].billableHours = record.hours
               } else if (record.recordType === 'non-billable') {
                 newDayData[dayIndex].nonBillableHours = record.hours
+              }
+              // Set WFH status from any record type
+              console.log(`[FETCH-SUBMIT] Setting dayIndex ${dayIndex} WFH to ${record.wfh}`)
+              if (record.wfh !== undefined) {
+                newDayData[dayIndex].isWFH = record.wfh
+              } else {
+                console.log(`[FETCH-SUBMIT] WARNING: wfh field is undefined for record at dayIndex ${dayIndex}`)
               }
             }
           })
@@ -250,6 +264,7 @@ function App() {
             projectId: DEFAULT_PROJECT_ID,
             recordType: 'billable',
             taskId: DEFAULT_TASK_ID,
+            wfh: dayDataForDay.isWFH,
           })
         }
 
@@ -263,6 +278,7 @@ function App() {
             projectId: DEFAULT_PROJECT_ID,
             recordType: 'non-billable',
             taskId: DEFAULT_TASK_ID,
+            wfh: dayDataForDay.isWFH,
           })
         }
       }
@@ -307,6 +323,7 @@ function App() {
             projectId: DEFAULT_PROJECT_ID,
             recordType: 'billable',
             taskId: DEFAULT_TASK_ID,
+            wfh: dayDataForDay.isWFH,
           })
         }
 
@@ -320,6 +337,7 @@ function App() {
             projectId: DEFAULT_PROJECT_ID,
             recordType: 'non-billable',
             taskId: DEFAULT_TASK_ID,
+            wfh: dayDataForDay.isWFH,
           })
         }
       }

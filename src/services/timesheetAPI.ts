@@ -24,6 +24,7 @@ export interface TimesheetRecord {
   projectId: string;
   taskId: string;
   recordType: string;
+  wfh?: boolean;
 }
 
 export interface TimesheetResponse {
@@ -133,6 +134,7 @@ export const saveTimesheet = async (record: TimesheetRecord): Promise<TimesheetR
         projectId: record.projectId,
         taskId: record.taskId,
         recordType: record.recordType,
+        wfh: record.wfh !== undefined ? record.wfh : false,
       }),
     });
 
@@ -190,6 +192,7 @@ export const submitTimesheet = async (record: TimesheetRecord): Promise<Timeshee
         projectId: record.projectId,
         taskId: record.taskId,
         recordType: record.recordType,
+        wfh: record.wfh !== undefined ? record.wfh : false,
       }),
     });
 
