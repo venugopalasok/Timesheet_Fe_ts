@@ -58,6 +58,134 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    position: relative;
+}
+
+.header .user-info-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+.header .user-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.header .user-name {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.header .user-email {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+}
+
+.header .user-profile-logo {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.header .user-profile-logo:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* Dropdown Menu */
+.header .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    min-width: 250px;
+    z-index: 1001;
+    overflow: hidden;
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header .dropdown-header {
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.header .dropdown-user-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.header .dropdown-user-email {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.header .dropdown-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.header .dropdown-item {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: white;
+    color: #374151;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+}
+
+.header .dropdown-item:hover {
+    background: #f3f4f6;
+}
+
+.header .signout-button {
+    color: #dc2626;
+    font-weight: 500;
+}
+
+.header .signout-button:hover {
+    background: #fee2e2;
+}
+
+.header .signout-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.header .dropdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: transparent;
 }
 
 .header .signout-select {
@@ -83,4 +211,15 @@
 
 .header .mobile-logo {
     display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .header .user-details {
+        display: none;
+    }
+    
+    .header .dropdown-menu {
+        min-width: 220px;
+    }
 }
