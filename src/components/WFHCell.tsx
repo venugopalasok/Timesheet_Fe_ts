@@ -6,7 +6,6 @@ interface WFHCellProps {
 }
 
 const WFHCell = ({ isWFH, onChange, dayIndex, day }: WFHCellProps) => {
-  // Convert full day name to 3-character abbreviation
   const getDayAbbreviation = (fullDay: string): string => {
     return fullDay.substring(0, 3).toUpperCase();
   };
