@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import DateCell from '../components/DateCell'
 import DayCell from '../components/DayCell'
 import HoursCell from '../components/HoursCell'
@@ -23,6 +24,7 @@ import {
   getSavedTimesheets,
   getSubmittedTimesheets
 } from '../services/timesheetAPI'
+import { getCurrentUser, getUserEmployeeId } from '../services/authAPI'
 import type { WeekRange } from '../utils/weekNavigation'
 
 interface DayData {
@@ -32,10 +34,21 @@ interface DayData {
 }
 
 const DEFAULT_PROJECT_ID = 'PROJ001';
-const DEFAULT_EMPLOYEE_ID = 'EMP001';
 const DEFAULT_TASK_ID = 'TASK001';
 
 function Grid() {
+  const navigate = useNavigate()
+  
+  // Get logged-in user's employee ID
+  const user = getCurrentUser()
+  const employeeId = getUserEmployeeId(user)
+  
+  // Redirect to login if no user is logged in
+  useEffect(() => {
+    if (!user || !employeeId) {
+      navigate('/signin')
+    }
+  }, [user, employeeId, navigate])
   const [currentWeek, setCurrentWeek] = useState<WeekRange>(getFirstWeekOfCurrentMonth())
   const [weekDisplay, setWeekDisplay] = useState<string>('')
   const [selectedDays, setSelectedDays] = useState<Set<number>>(new Set())
@@ -148,7 +161,7 @@ function Grid() {
     // Fetch from save service
     if (servicesHealthy.save) {
       try {
-        const saveResponse = await getSavedTimesheets(DEFAULT_EMPLOYEE_ID, startDate, endDate)
+        const saveResponse = await getSavedTimesheets(employeeId, startDate, endDate)
         console.log('[FETCH-SAVE] Save service response:', saveResponse)
         if (saveResponse.data && Array.isArray(saveResponse.data)) {
           console.log(`[FETCH-SAVE] Found ${saveResponse.data.length} saved records`)
@@ -183,7 +196,7 @@ function Grid() {
     // Fetch from submit service
     if (servicesHealthy.submit) {
       try {
-        const submitResponse = await getSubmittedTimesheets(DEFAULT_EMPLOYEE_ID, startDate, endDate)
+        const submitResponse = await getSubmittedTimesheets(employeeId, startDate, endDate)
         console.log('[FETCH-SUBMIT] Submit service response:', submitResponse)
         if (submitResponse.data && Array.isArray(submitResponse.data)) {
           console.log(`[FETCH-SUBMIT] Found ${submitResponse.data.length} submitted records`)
@@ -258,7 +271,7 @@ function Grid() {
           await saveTimesheet({
             date: date,
             hours: dayDataForDay.billableHours,
-            employeeId: DEFAULT_EMPLOYEE_ID,
+            employeeId: employeeId,
             projectId: DEFAULT_PROJECT_ID,
             recordType: 'billable',
             taskId: DEFAULT_TASK_ID,
@@ -272,7 +285,7 @@ function Grid() {
           await saveTimesheet({
             date: date,
             hours: dayDataForDay.nonBillableHours,
-            employeeId: DEFAULT_EMPLOYEE_ID,
+            employeeId: employeeId,
             projectId: DEFAULT_PROJECT_ID,
             recordType: 'non-billable',
             taskId: DEFAULT_TASK_ID,
@@ -317,7 +330,7 @@ function Grid() {
           await submitTimesheet({
             date: date,
             hours: dayDataForDay.billableHours,
-            employeeId: DEFAULT_EMPLOYEE_ID,
+            employeeId: employeeId,
             projectId: DEFAULT_PROJECT_ID,
             recordType: 'billable',
             taskId: DEFAULT_TASK_ID,
@@ -331,7 +344,7 @@ function Grid() {
           await submitTimesheet({
             date: date,
             hours: dayDataForDay.nonBillableHours,
-            employeeId: DEFAULT_EMPLOYEE_ID,
+            employeeId: employeeId,
             projectId: DEFAULT_PROJECT_ID,
             recordType: 'non-billable',
             taskId: DEFAULT_TASK_ID,

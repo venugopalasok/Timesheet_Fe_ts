@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { login } from '../services/authAPI'
 
 function SignIn() {
   const navigate = useNavigate()
@@ -25,16 +26,16 @@ function SignIn() {
     setIsLoading(true)
 
     try {
-      // TODO: Replace with actual authentication API call
-      // const response = await login(formData.email, formData.password)
-      
-      // Temporary mock authentication for demonstration
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock validation
+      // Validation
       if (formData.email === '' || formData.password === '') {
         throw new Error('Please fill in all fields')
       }
+
+      // Login user via API
+      await login({
+        email: formData.email,
+        password: formData.password
+      })
 
       // On successful login, navigate to grid
       navigate('/grid')

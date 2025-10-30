@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { getCurrentUser, getUserFullName, getUserEmployeeId, logout } from '../services/authAPI'
 import './Header.css'
 
 const Header = () => {
@@ -7,11 +8,18 @@ const Header = () => {
     const location = useLocation()
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
+    // Get user data from localStorage
+    const user = getCurrentUser()
+    const userName = user ? getUserFullName(user) : 'Guest User'
+    const userEmail = user?.email || 'guest@example.com'
+    const employeeId = user ? getUserEmployeeId(user) : ''
+
     // Hide header on sign-in and sign-up pages
     const hideHeader = location.pathname === '/signin' || location.pathname === '/signup'
 
     const handleSignOut = () => {
-        // TODO: Add actual logout logic here (clear tokens, user state, etc.)
+        // Clear auth data
+        logout()
         console.log('Signing out...')
         
         // Navigate to sign-in page
@@ -24,10 +32,6 @@ const Header = () => {
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen)
     }
-
-    // Mock user data - replace with actual user data from context/state
-    const userName = 'John Doe'
-    const userEmail = 'john.doe@example.com'
 
     if (hideHeader) {
         return null
@@ -58,6 +62,11 @@ const Header = () => {
                             <div className="dropdown-header">
                                 <div className="dropdown-user-name">{userName}</div>
                                 <div className="dropdown-user-email">{userEmail}</div>
+                                {employeeId && (
+                                    <div className="dropdown-user-email" style={{ fontSize: '0.75rem', marginTop: '2px', color: '#6b7280' }}>
+                                        ID: {employeeId}
+                                    </div>
+                                )}
                             </div>
                             <div className="dropdown-divider"></div>
                             <button 

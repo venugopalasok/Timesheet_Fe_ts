@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { register } from '../services/authAPI'
 
 function SignUp() {
   const navigate = useNavigate()
@@ -12,6 +13,7 @@ function SignUp() {
   })
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [employeeId, setEmployeeId] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -42,14 +44,22 @@ function SignUp() {
         throw new Error('Please fill in all fields')
       }
 
-      // TODO: Replace with actual registration API call
-      // const response = await register(formData)
-      
-      // Temporary mock registration for demonstration
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Register user via API
+      const response = await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword
+      })
 
-      // On successful registration, navigate to sign in
-      navigate('/signin')
+      // Store the employee ID to show success message
+      setEmployeeId(response.user.employeeId)
+
+      // Show success message for 3 seconds before navigating
+      setTimeout(() => {
+        navigate('/grid')
+      }, 3000)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to sign up'
       setError(message)
@@ -69,6 +79,14 @@ function SignUp() {
         {error && (
           <div className='bg-red-100 border-2 border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4'>
             ✕ {error}
+          </div>
+        )}
+
+        {employeeId && (
+          <div className='bg-green-100 border-2 border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4'>
+            <div className='font-semibold mb-1'>✓ Registration Successful!</div>
+            <div className='text-sm'>Your Employee ID: <span className='font-bold'>{employeeId}</span></div>
+            <div className='text-xs mt-1'>Redirecting to dashboard...</div>
           </div>
         )}
 
