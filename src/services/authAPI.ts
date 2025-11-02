@@ -1,7 +1,11 @@
 // API service for authentication operations
 // Communicates with auth-service (port 3002)
 
-const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:3002';
+import { normalizeApiUrl } from '../utils/apiUtils';
+
+const AUTH_SERVICE_URL = normalizeApiUrl(
+  import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:3002'
+);
 
 // Token storage keys
 const TOKEN_KEY = 'timesheet_auth_token';

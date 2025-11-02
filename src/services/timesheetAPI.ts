@@ -1,7 +1,11 @@
 // API service for timesheet operations
 // Communicates with save-service (port 3000) and submit-service (port 3001)
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+import { normalizeApiUrl } from '../utils/apiUtils';
+
+const BASE_URL = normalizeApiUrl(
+  import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'
+);
 const SAVE_SERVICE_URL = `${BASE_URL}`;
 const SUBMIT_SERVICE_URL = `${BASE_URL.replace('3000', '3001')}`;
 
