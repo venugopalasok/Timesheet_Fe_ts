@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DateCell from '../components/DateCell'
-import DayCell from '../components/DayCell'
 import HoursCell from '../components/HoursCell'
 import WFHCell from '../components/WFHCell'
 import { 
@@ -99,18 +98,6 @@ function Grid() {
     if (prevWeek) {
       setCurrentWeek(prevWeek)
     }
-  }
-
-  const handleDayToggle = (dayIndex: number) => {
-    setSelectedDays(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(dayIndex)) {
-        newSet.delete(dayIndex)
-      } else {
-        newSet.add(dayIndex)
-      }
-      return newSet
-    })
   }
 
   const handleBillableHoursChange = (dayIndex: number, hours: number) => {
@@ -469,7 +456,7 @@ function Grid() {
         
         {/* Row 3 - Billable Hours */}
         <div className='row-header'>Billable Hours</div>
-        {currentWeek.dates.map((date, index) => (
+        {currentWeek.dates.map((_date, index) => (
           <HoursCell
             key={index}
             hours={dayData[index].billableHours}
@@ -480,7 +467,7 @@ function Grid() {
 
         {/* Row 4 - Non-Billable Hours */}
         <div className='row-header'>Non-Billable Hours</div>
-        {currentWeek.dates.map((date, index) => (
+        {currentWeek.dates.map((_date, index) => (
           <HoursCell
             key={index}
             hours={dayData[index].nonBillableHours}
