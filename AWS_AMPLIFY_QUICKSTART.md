@@ -139,6 +139,17 @@ app.use(cors({
 3. Verify `amplify.yml` is committed
 4. Ensure all dependencies are in `package.json`
 
+### ⚠️ Cache/SSM Warnings (Harmless)
+If you see warnings like:
+- `Unable to write cache: 404`
+- `Failed to set up process.env.secrets`
+
+**These are normal on first deployment!** They occur because:
+- Cache doesn't exist yet (will auto-create after first build)
+- SSM Parameter Store isn't configured (you're using standard env vars instead)
+
+✅ **Safe to ignore** - your build will still succeed. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for details.
+
 ---
 
 ## 📂 Files You Need

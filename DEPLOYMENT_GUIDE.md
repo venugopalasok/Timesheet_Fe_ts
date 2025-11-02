@@ -331,6 +331,40 @@ If you need to change environment variables after deployment:
 
 This enables client-side routing for React Router.
 
+### Issue: "Unable to write cache" / "Failed to set up SSM secrets" Warnings
+
+These warnings are **NORMAL and typically harmless** on your first deployment:
+
+**1. Cache Warning: `Unable to write cache: Request failed with status code 404`**
+- **What it means**: AWS Amplify is trying to save build cache, but no cache exists yet (first build)
+- **When it happens**: First deployment or new branch deployment
+- **Impact**: None - your build will still work, just won't have cache benefits initially
+- **Fix**: This resolves automatically on subsequent builds. The cache will be created after the first successful build.
+- **Action needed**: ❌ None - ignore this warning
+
+**2. SSM Secrets Warning: `Failed to set up process.env.secrets`**
+- **What it means**: AWS Amplify is checking AWS Systems Manager (SSM) Parameter Store for secrets, but none are configured
+- **When it happens**: When you haven't set up SSM Parameter Store for secrets management
+- **Impact**: None if you're using standard environment variables in Amplify Console
+- **Why it happens**: Amplify automatically checks for SSM parameters at path `/amplify/{app-id}/deployment-branch/{branch-name}/`, but you're using standard environment variables instead
+- **Action needed**: ❌ None if using standard env vars in Amplify Console
+
+**When to worry:**
+- ✅ **Safe to ignore** if:
+  - You're using environment variables set in Amplify Console
+  - Your build completes successfully
+  - These are just warnings (not errors)
+  
+- ⚠️ **Take action** if:
+  - Your build actually fails (not just warnings)
+  - You're trying to use SSM Parameter Store for secrets and it's not working
+  - Cache issues persist after multiple successful builds
+
+**Best Practice:**
+- Use Amplify Console's **Environment variables** feature (recommended for most cases)
+- SSM Parameter Store is optional and mainly for enterprise setups with centralized secrets management
+- Cache will automatically work after the first successful build
+
 ## 📊 Monitoring
 
 Monitor your deployment:
